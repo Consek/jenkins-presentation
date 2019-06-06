@@ -1,24 +1,42 @@
-pipeline {
-  agent {
-    docker {
-      image 'centos:7'
-    }
-
+pipeline{
+  agent none
+  options {
+    buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '2')
+    timestamps()
   }
-  stages {
-    stage('First branch') {
+  environment {
+    DEBUG = "1"
+  }
+  stages{
+    stage('Build Linux Fedora 29') {
       parallel {
-        stage('First branch') {
-          steps {
-            sh 'echo "First branch"'
+        stage('Fedora 29') {
+          stages {
+            stage('Build'){
+              steps{
+                echo 'Build'
+              }
+            }
+            stage('Unit Test'){
+              steps{
+                echo 'Unit Test'
+              }
+            }
           }
         }
-        stage('Second branch') {
-          steps {
-            sh '''echo "Second branch"
-'''
+        stage('Ubuntu 18.04'){
+          steps{
+            echo 'Build'
+          }
+          when {
+            branch 'master'
           }
         }
+      }
+    }
+    stage('Deploy'){
+      steps{
+        echo 'Deploy'
       }
     }
   }
