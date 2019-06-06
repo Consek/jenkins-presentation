@@ -34,7 +34,15 @@ pipeline{
         }
       }
     }
+    stage('Integration Tests'){
+      steps{
+        echo 'Integration Tests'
+      }
+    }
     stage('Deploy'){
+      when{
+        branch 'master'
+      }
       steps{
         echo 'Deploy'
       }
